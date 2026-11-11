@@ -11,7 +11,7 @@
 ## 3. Verificación frente a las plantillas
 
 - [x] 3.1 Comparar el HTML renderizado de cada página con su plantilla: clases de Tailwind y texto visible. Verificación: las cinco páginas coinciden en clases y texto.
-- [ ] 3.2 Revisar cada página en el navegador frente a su plantilla. Verificación: revisión manual, sin diferencias de maquetación.
+- [x] 3.2 Revisar cada página en el navegador frente a su plantilla. Verificación: revisión manual, sin diferencias de maquetación.
 
 ## Workflow follow-up
 

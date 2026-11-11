@@ -7,6 +7,7 @@ test-results/
 .env
 .env.local
 *.log
+next-env.d.ts
 .DS_Store
 *.pem
 *.tsbuildinfo

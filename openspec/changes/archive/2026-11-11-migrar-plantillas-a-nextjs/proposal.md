@@ -26,7 +26,7 @@ Ninguna. La migración no cambia el comportamiento visible ni los requisitos de 
 
 ## Impact
 
-- Nuevos archivos de configuración del proyecto: `package.json`, `tsconfig.json`, `postcss.config.mjs`, `next.config.ts` y `eslint.config.mjs`.
+- Nuevos archivos de configuración del proyecto: `package.json`, `tsconfig.json`, `next.config.ts` y `eslint.config.mjs`. Tailwind CSS 4 se integra como plugin de Turbopack en `next.config.ts`, sin archivo de PostCSS.
 - Nuevas carpetas `app/` y `public/`.
 - Las plantillas de `docs/mockups/` se conservan como referencia.
 - Sin base de datos, sin autenticación y sin formularios que envíen datos: esos llegan en módulos posteriores.
