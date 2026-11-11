@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulso · Iniciar sesión</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+      <a href="/" class="text-xl font-bold tracking-tight text-slate-900">Pulso</a>
+      <nav class="flex items-center gap-4 text-sm">
+        <a href="/" class="text-slate-600 hover:text-slate-900">Sugerencias</a>
+        <a href="/registro" class="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-100">Registrarse</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex min-h-[calc(100vh-73px)] items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md">
+      <div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <h1 class="text-2xl font-bold text-slate-900">Iniciar sesión</h1>
+        <p class="mt-1 text-sm text-slate-500">Entra para proponer sugerencias y votar.</p>
+
+        <form id="formulario-login" class="mt-6 space-y-5" novalidate>
+          <div>
+            <label for="correo" class="block text-sm font-medium text-slate-700">Correo electrónico</label>
+            <input
+              id="correo"
+              name="correo"
+              type="email"
+              autocomplete="email"
+              placeholder="tu@correo.com"
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30"
+            />
+          </div>
+
+          <div>
+            <label for="contrasena" class="block text-sm font-medium text-slate-700">Contraseña</label>
+            <input
+              id="contrasena"
+              name="contrasena"
+              type="password"
+              autocomplete="current-password"
+              placeholder="••••••••"
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30"
+            />
+          </div>
+
+          <p id="mensaje-error" role="alert" class="hidden rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"></p>
+
+          <button
+            type="submit"
+            class="w-full rounded-lg bg-sky-600 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+          >
+            Entrar
+          </button>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-slate-500">
+          ¿No tienes cuenta?
+          <a href="/registro" class="font-medium text-sky-700 hover:underline">Regístrate</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

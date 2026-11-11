@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulso · Sugerencias</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+      <a href="/" class="text-xl font-bold tracking-tight text-slate-900">Pulso</a>
+      <nav class="flex items-center gap-4 text-sm">
+        <a href="/login" class="text-slate-600 hover:text-slate-900">Iniciar sesión</a>
+        <a href="/registro" class="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-100">Registrarse</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-4 py-10">
+
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Sugerencias</h1>
+        <p class="mt-1 text-sm text-slate-500">Ideas propuestas por la comunidad. Cualquiera puede leerlas.</p>
+      </div>
+      <a
+        href="/sugerencias/nueva"
+        class="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-700"
+      >
+        Nueva sugerencia
+      </a>
+    </div>
+
+    <p class="mt-4 text-xs text-slate-500">
+      Para enviar una sugerencia necesitas <a href="/login" class="font-medium text-sky-700 hover:underline">iniciar sesión</a>.
+    </p>
+
+    <ul class="mt-8 space-y-4">
+
+      <li class="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="flex w-14 shrink-0 flex-col items-center rounded-lg bg-slate-100 py-2">
+          <span class="text-lg font-bold text-slate-900">12</span>
+          <span class="text-xs text-slate-500">votos</span>
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <h2 class="font-semibold text-slate-900">Modo oscuro en toda la aplicación</h2>
+            <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">En desarrollo</span>
+          </div>
+          <p class="mt-1 text-sm text-slate-600">Me gustaría poder usar la aplicación de noche sin cegarme con el fondo blanco.</p>
+          <p class="mt-2 text-xs text-slate-400">Ana Torres · 3 de noviembre de 2026</p>
+        </div>
+        <div class="flex shrink-0 items-start">
+          <button type="button" class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">Votar</button>
+        </div>
+      </li>
+
+      <li class="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="flex w-14 shrink-0 flex-col items-center rounded-lg bg-slate-100 py-2">
+          <span class="text-lg font-bold text-slate-900">7</span>
+          <span class="text-xs text-slate-500">votos</span>
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <h2 class="font-semibold text-slate-900">Exportar sugerencias a CSV</h2>
+            <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">Pendiente</span>
+          </div>
+          <p class="mt-1 text-sm text-slate-600">Para llevar la lista a una hoja de cálculo y priorizar con el equipo.</p>
+          <p class="mt-2 text-xs text-slate-400">Luis Pérez · 1 de noviembre de 2026</p>
+        </div>
+        <div class="flex shrink-0 items-start">
+          <button type="button" class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">Votar</button>
+        </div>
+      </li>
+
+      <li class="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="flex w-14 shrink-0 flex-col items-center rounded-lg bg-slate-100 py-2">
+          <span class="text-lg font-bold text-slate-900">3</span>
+          <span class="text-xs text-slate-500">votos</span>
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <h2 class="font-semibold text-slate-900">Notificar cuando una idea cambie de estado</h2>
+            <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">Completada</span>
+          </div>
+          <p class="mt-1 text-sm text-slate-600">Quiero enterarme cuando una sugerencia que voté se publique o se complete.</p>
+          <p class="mt-2 text-xs text-slate-400">Marta Ruiz · 28 de octubre de 2026</p>
+        </div>
+        <div class="flex shrink-0 items-start">
+          <button type="button" class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">Votar</button>
+        </div>
+      </li>
+
+    </ul>
+
+    <div class="mt-10 hidden rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center" id="estado-vacio">
+      <p class="font-medium text-slate-900">Todavía no hay sugerencias</p>
+      <p class="mt-1 text-sm text-slate-500">Sé la primera persona en proponer una idea.</p>
+    </div>
+
+  </main>
+
+</body>
+</html>
