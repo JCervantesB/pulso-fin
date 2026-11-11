@@ -36,4 +36,8 @@ Una aplicación web con Next.js y TypeScript. Las páginas se construyen a parti
 
 ## Comandos
 
-Los comandos de verificación se añaden a medida que el proyecto los necesita, y se documentan aquí cuando existen.
+- `npm run db:generate` — genera una migración nueva a partir del esquema en `db/schema.ts`.
+- `npm run db:migrate` — aplica las migraciones pendientes a la base de datos de Neon.
+- `npm test` — ejecuta las pruebas unitarias y de integración con Vitest.
+- `npm run lint` — ejecuta ESLint.
+- `npm run build` — compila el proyecto y valida los tipos.
