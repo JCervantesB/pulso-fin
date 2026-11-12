@@ -1,10 +1,14 @@
-﻿import Link from "next/link";
+﻿"use client";
 
-export const metadata = {
-  title: "Pulso · Iniciar sesión",
-};
+import Link from "next/link";
+import { useActionState } from "react";
+import { iniciarSesion } from "@/app/actions/auth";
+
+const estadoInicial = { error: undefined as string | undefined };
 
 export default function LoginPage() {
+  const [estado, accion, pendiente] = useActionState(iniciarSesion, estadoInicial);
+
   return (
     <>
       <header className="border-b border-slate-200 bg-white">
@@ -23,7 +27,7 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold text-slate-900">Iniciar sesión</h1>
             <p className="mt-1 text-sm text-slate-500">Entra para proponer sugerencias y votar.</p>
 
-            <form id="formulario-login" className="mt-6 space-y-5" noValidate>
+            <form action={accion} className="mt-6 space-y-5" noValidate>
               <div>
                 <label htmlFor="correo" className="block text-sm font-medium text-slate-700">Correo electrónico</label>
                 <input
@@ -48,11 +52,14 @@ export default function LoginPage() {
                 />
               </div>
 
-              <p id="mensaje-error" role="alert" className="hidden rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"></p>
+              {estado.error && (
+                <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{estado.error}</p>
+              )}
 
               <button
                 type="submit"
-                className="w-full rounded-lg bg-sky-600 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+                disabled={pendiente}
+                className="w-full rounded-lg bg-sky-600 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-60"
               >
                 Entrar
               </button>

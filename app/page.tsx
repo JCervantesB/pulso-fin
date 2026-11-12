@@ -1,18 +1,41 @@
 ﻿import Link from "next/link";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { leerSesion } from "@/lib/auth/cookies";
+import { cerrarSesion } from "@/app/actions/auth";
+
+export const instant = false;
 
 export const metadata = {
   title: "Pulso · Sugerencias",
 };
 
-export default function SugerenciasPage() {
+export default async function SugerenciasPage() {
+  const sesion = await leerSesion();
+  const usuario = sesion
+    ? await db.select({ email: users.email }).from(users).where(eq(users.id, sesion.id))
+    : [];
+
   return (
     <>
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <Link href="/" className="text-xl font-bold tracking-tight text-slate-900">Pulso</Link>
           <nav className="flex items-center gap-4 text-sm">
-            <Link href="/login" className="text-slate-600 hover:text-slate-900">Iniciar sesión</Link>
-            <Link href="/registro" className="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-100">Registrarse</Link>
+            {sesion ? (
+              <>
+                <span className="text-slate-500">{usuario[0]?.email}</span>
+                <form action={cerrarSesion}>
+                  <button type="submit" className="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-100">Cerrar sesión</button>
+                </form>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="text-slate-600 hover:text-slate-900">Iniciar sesión</Link>
+                <Link href="/registro" className="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-100">Registrarse</Link>
+              </>
+            )}
           </nav>
         </div>
       </header>

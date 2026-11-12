@@ -35,11 +35,13 @@ La versión canónica vive en `.agents/skills/` y se enlaza en `.claude/skills/`
 - Drizzle ORM con las versiones fijadas en `package.json`. No cambies una versión sin un cambio en OpenSpec.
 - No uses Prisma.
 - Pruebas unitarias y de integración con Vitest. Pruebas de navegador con Playwright.
+- Autenticación propia: contraseñas con `crypto.scrypt` y sesión firmada con `jose`.
 
 ## Convenciones
 
 - Usa `any` solo si no hay otra opción, y deja un comentario que lo explique.
 - La cadena de conexión a la base de datos va en `.env`, nunca en el código ni en el repositorio.
+- El secreto de sesión va en `SESSION_SECRET`, en `.env`, nunca en el código ni en el repositorio.
 - Las migraciones aplicadas no se modifican. Un cambio de esquema es una migración nueva.
 - Las rutas que escriben datos comprueban la sesión en el servidor, no solo ocultando botones.
 

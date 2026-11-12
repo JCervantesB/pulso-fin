@@ -1,4 +1,12 @@
 ﻿import Link from "next/link";
+import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { leerSesion } from "@/lib/auth/cookies";
+import { cerrarSesion } from "@/app/actions/auth";
+
+export const instant = false;
 
 export const metadata = {
   title: "Pulso · Panel de administración",
@@ -7,7 +15,14 @@ export const metadata = {
 const selectClase =
   "rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30";
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const sesion = await leerSesion();
+  if (!sesion || sesion.role !== "administrador") {
+    redirect("/");
+  }
+
+  const usuario = await db.select({ email: users.email }).from(users).where(eq(users.id, sesion.id));
+
   return (
     <>
       <header className="border-b border-slate-200 bg-white">
@@ -18,8 +33,10 @@ export default function AdminPage() {
           </div>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/" className="text-slate-600 hover:text-slate-900">Ver sugerencias</Link>
-            <span className="text-slate-500">admin@correo.com</span>
-            <button type="button" className="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-100">Cerrar sesión</button>
+            <span className="text-slate-500">{usuario[0]?.email}</span>
+            <form action={cerrarSesion}>
+              <button type="submit" className="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-100">Cerrar sesión</button>
+            </form>
           </nav>
         </div>
       </header>
