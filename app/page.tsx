@@ -1,7 +1,7 @@
 ﻿import Link from "next/link";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { users } from "@/db/schema";
+import { sugerencias, users } from "@/db/schema";
 import { leerSesion } from "@/lib/auth/cookies";
 import { cerrarSesion } from "@/app/actions/auth";
 
@@ -11,11 +11,34 @@ export const metadata = {
   title: "Pulso · Sugerencias",
 };
 
+type Estado = "pendiente" | "en_desarrollo" | "completada";
+
+const etiquetaEstado: Record<Estado, { texto: string; clases: string }> = {
+  pendiente: { texto: "Pendiente", clases: "bg-slate-100 text-slate-700" },
+  en_desarrollo: { texto: "En desarrollo", clases: "bg-amber-100 text-amber-800" },
+  completada: { texto: "Completada", clases: "bg-emerald-100 text-emerald-800" },
+};
+
+const formatoFecha = new Intl.DateTimeFormat("es", { day: "numeric", month: "long", year: "numeric" });
+
 export default async function SugerenciasPage() {
   const sesion = await leerSesion();
   const usuario = sesion
     ? await db.select({ email: users.email }).from(users).where(eq(users.id, sesion.id))
     : [];
+
+  const filas = await db
+    .select({
+      id: sugerencias.id,
+      titulo: sugerencias.titulo,
+      descripcion: sugerencias.descripcion,
+      estado: sugerencias.estado,
+      createdAt: sugerencias.createdAt,
+      autor: users.nombre,
+    })
+    .from(sugerencias)
+    .innerJoin(users, eq(sugerencias.autorId, users.id))
+    .orderBy(desc(sugerencias.createdAt));
 
   return (
     <>
@@ -58,68 +81,34 @@ export default async function SugerenciasPage() {
           Para enviar una sugerencia necesitas <Link href="/login" className="font-medium text-sky-700 hover:underline">iniciar sesión</Link>.
         </p>
 
-        <ul className="mt-8 space-y-4">
-
-          <li className="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-slate-100 py-2">
-              <span className="text-lg font-bold text-slate-900">12</span>
-              <span className="text-xs text-slate-500">votos</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="font-semibold text-slate-900">Modo oscuro en toda la aplicación</h2>
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">En desarrollo</span>
-              </div>
-              <p className="mt-1 text-sm text-slate-600">Me gustaría poder usar la aplicación de noche sin cegarme con el fondo blanco.</p>
-              <p className="mt-2 text-xs text-slate-400">Ana Torres · 3 de noviembre de 2026</p>
-            </div>
-            <div className="flex shrink-0 items-start">
-              <button type="button" className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">Votar</button>
-            </div>
-          </li>
-
-          <li className="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-slate-100 py-2">
-              <span className="text-lg font-bold text-slate-900">7</span>
-              <span className="text-xs text-slate-500">votos</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="font-semibold text-slate-900">Exportar sugerencias a CSV</h2>
-                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">Pendiente</span>
-              </div>
-              <p className="mt-1 text-sm text-slate-600">Para llevar la lista a una hoja de cálculo y priorizar con el equipo.</p>
-              <p className="mt-2 text-xs text-slate-400">Luis Pérez · 1 de noviembre de 2026</p>
-            </div>
-            <div className="flex shrink-0 items-start">
-              <button type="button" className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">Votar</button>
-            </div>
-          </li>
-
-          <li className="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-slate-100 py-2">
-              <span className="text-lg font-bold text-slate-900">3</span>
-              <span className="text-xs text-slate-500">votos</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="font-semibold text-slate-900">Notificar cuando una idea cambie de estado</h2>
-                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">Completada</span>
-              </div>
-              <p className="mt-1 text-sm text-slate-600">Quiero enterarme cuando una sugerencia que voté se publique o se complete.</p>
-              <p className="mt-2 text-xs text-slate-400">Marta Ruiz · 28 de octubre de 2026</p>
-            </div>
-            <div className="flex shrink-0 items-start">
-              <button type="button" className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">Votar</button>
-            </div>
-          </li>
-
-        </ul>
-
-        <div className="mt-10 hidden rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center" id="estado-vacio">
-          <p className="font-medium text-slate-900">Todavía no hay sugerencias</p>
-          <p className="mt-1 text-sm text-slate-500">Sé la primera persona en proponer una idea.</p>
-        </div>
+        {filas.length === 0 ? (
+          <div className="mt-10 rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
+            <p className="font-medium text-slate-900">Todavía no hay sugerencias</p>
+            <p className="mt-1 text-sm text-slate-500">Sé la primera persona en proponer una idea.</p>
+          </div>
+        ) : (
+          <ul className="mt-8 space-y-4">
+            {filas.map((fila) => {
+              const estado = etiquetaEstado[fila.estado as Estado];
+              return (
+                <li key={fila.id} className="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-slate-100 py-2">
+                    <span className="text-lg font-bold text-slate-900">0</span>
+                    <span className="text-xs text-slate-500">votos</span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="font-semibold text-slate-900">{fila.titulo}</h2>
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${estado.clases}`}>{estado.texto}</span>
+                    </div>
+                    <p className="mt-1 text-sm text-slate-600">{fila.descripcion}</p>
+                    <p className="mt-2 text-xs text-slate-400">{fila.autor} · {formatoFecha.format(fila.createdAt)}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
 
       </main>
     </>

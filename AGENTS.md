@@ -22,6 +22,13 @@ Además de las skills de OpenSpec (`openspec-*`), el proyecto define dos skills 
 
 La versión canónica vive en `.agents/skills/` y se enlaza en `.claude/skills/` para Claude Code. Si editas una skill, hazlo en `.agents/skills/` y vuelve a copiarla.
 
+## Modelo de datos
+
+- `users` — cuentas con nombre, correo único, contraseña cifrada y rol.
+- `sugerencias` — ideas propuestas con título, descripción, autor (FK a `users`), estado y fecha. El estado es `pendiente`, `en_desarrollo` o `completada`, con `pendiente` por defecto.
+
+La lista pública de sugerencias se lee en `/` con un join a `users` para mostrar el nombre del autor, ordenada de la más reciente a la más antigua.
+
 ## Diseño
 
 - Las plantillas de `docs/mockups/` son la referencia visual. El resultado debe parecerse a la plantilla, no solo funcionar.
@@ -50,5 +57,6 @@ La versión canónica vive en `.agents/skills/` y se enlaza en `.claude/skills/`
 - `npm run db:generate` — genera una migración nueva a partir del esquema en `db/schema.ts`.
 - `npm run db:migrate` — aplica las migraciones pendientes a la base de datos de Neon.
 - `npm test` — ejecuta las pruebas unitarias y de integración con Vitest.
+- `npm run test:e2e` — ejecuta las pruebas de navegador con Playwright (arranca y compila la app; requiere `npx playwright install chromium` la primera vez).
 - `npm run lint` — ejecuta ESLint.
 - `npm run build` — compila el proyecto y valida los tipos.
