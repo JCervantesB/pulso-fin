@@ -1,9 +1,10 @@
 ﻿import Link from "next/link";
-import { desc, eq } from "drizzle-orm";
+import { count, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { sugerencias, users } from "@/db/schema";
+import { sugerencias, users, votos } from "@/db/schema";
 import { leerSesion } from "@/lib/auth/cookies";
 import { cerrarSesion } from "@/app/actions/auth";
+import { alternarVoto } from "@/app/actions/votaciones";
 
 export const instant = false;
 
@@ -39,6 +40,18 @@ export default async function SugerenciasPage() {
     .from(sugerencias)
     .innerJoin(users, eq(sugerencias.autorId, users.id))
     .orderBy(desc(sugerencias.createdAt));
+
+  const conteos = await db
+    .select({ sugerenciaId: votos.sugerenciaId, total: count() })
+    .from(votos)
+    .groupBy(votos.sugerenciaId);
+
+  const misVotos = sesion
+    ? await db.select({ sugerenciaId: votos.sugerenciaId }).from(votos).where(eq(votos.usuarioId, sesion.id))
+    : [];
+
+  const totales = new Map(conteos.map((c) => [c.sugerenciaId, c.total]));
+  const votados = new Set(misVotos.map((v) => v.sugerenciaId));
 
   return (
     <>
@@ -90,10 +103,12 @@ export default async function SugerenciasPage() {
           <ul className="mt-8 space-y-4">
             {filas.map((fila) => {
               const estado = etiquetaEstado[fila.estado as Estado];
+              const total = totales.get(fila.id) ?? 0;
+              const yaVotado = votados.has(fila.id);
               return (
                 <li key={fila.id} className="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-slate-100 py-2">
-                    <span className="text-lg font-bold text-slate-900">0</span>
+                    <span data-testid="contador-votos" className="text-lg font-bold text-slate-900">{total}</span>
                     <span className="text-xs text-slate-500">votos</span>
                   </div>
                   <div className="min-w-0 flex-1">
@@ -103,6 +118,26 @@ export default async function SugerenciasPage() {
                     </div>
                     <p className="mt-1 text-sm text-slate-600">{fila.descripcion}</p>
                     <p className="mt-2 text-xs text-slate-400">{fila.autor} · {formatoFecha.format(fila.createdAt)}</p>
+                  </div>
+                  <div className="flex shrink-0 items-start">
+                    {sesion ? (
+                      <form action={alternarVoto}>
+                        <input type="hidden" name="sugerenciaId" value={fila.id} />
+                        <button
+                          type="submit"
+                          className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                        >
+                          {yaVotado ? "Retirar voto" : "Votar"}
+                        </button>
+                      </form>
+                    ) : (
+                      <Link
+                        href="/login"
+                        className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                      >
+                        Votar
+                      </Link>
+                    )}
                   </div>
                 </li>
               );

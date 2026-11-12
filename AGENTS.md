@@ -26,8 +26,9 @@ La versión canónica vive en `.agents/skills/` y se enlaza en `.claude/skills/`
 
 - `users` — cuentas con nombre, correo único, contraseña cifrada y rol.
 - `sugerencias` — ideas propuestas con título, descripción, autor (FK a `users`), estado y fecha. El estado es `pendiente`, `en_desarrollo` o `completada`, con `pendiente` por defecto.
+- `votos` — un voto por usuario y sugerencia, con índice único sobre (`sugerencia_id`, `usuario_id`) que impide votos duplicados.
 
-La lista pública de sugerencias se lee en `/` con un join a `users` para mostrar el nombre del autor, ordenada de la más reciente a la más antigua.
+La lista pública de sugerencias se lee en `/` con un join a `users` para mostrar el nombre del autor, ordenada de la más reciente a la más antigua, y con el contador de votos de cada sugerencia. Votar y retirar el voto se hace con la acción `alternarVoto`, que exige sesión.
 
 ## Diseño
 
