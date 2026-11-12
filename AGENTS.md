@@ -13,6 +13,15 @@ Una aplicación web con Next.js y TypeScript. Las páginas se construyen a parti
 - Usa los comandos de OpenSpec según su documentación vigente.
 - Las skills del proyecto están en `.agents/skills/`. Si una skill aplica a la tarea, cárgala y síguela.
 
+## Skills del proyecto
+
+Además de las skills de OpenSpec (`openspec-*`), el proyecto define dos skills propias:
+
+- `drizzle-neon` — usar cuando la tarea toque el esquema, las migraciones o las consultas a PostgreSQL (Neon) con Drizzle.
+- `implementar-desde-mockup` — usar cuando la tarea construya o ajuste una página a partir de una plantilla de `docs/mockups/`.
+
+La versión canónica vive en `.agents/skills/` y se enlaza en `.claude/skills/` para Claude Code. Si editas una skill, hazlo en `.agents/skills/` y vuelve a copiarla.
+
 ## Diseño
 
 - Las plantillas de `docs/mockups/` son la referencia visual. El resultado debe parecerse a la plantilla, no solo funcionar.
