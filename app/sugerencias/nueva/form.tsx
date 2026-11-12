@@ -45,6 +45,18 @@ export default function NuevaSugerenciaForm() {
             <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{estado.error}</p>
           )}
 
+          {estado.similares && estado.similares.length > 0 && (
+            <div role="alert" className="rounded-lg bg-amber-50 px-3 py-3 text-sm text-amber-800">
+              <p className="font-medium">Encontramos sugerencias parecidas:</p>
+              <ul className="mt-1 list-disc pl-5">
+                {estado.similares.map((similar) => (
+                  <li key={similar.id}>{similar.titulo}</li>
+                ))}
+              </ul>
+              <p className="mt-2">Revisa si tu idea ya está cubierta antes de enviarla.</p>
+            </div>
+          )}
+
           <div className="flex items-center justify-end gap-3 pt-2">
             <Link href="/" className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">Cancelar</Link>
             <button

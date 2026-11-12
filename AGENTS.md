@@ -34,6 +34,8 @@ La búsqueda filtra por título y descripción (sin distinguir mayúsculas) con 
 
 El panel `/admin` (solo rol `administrador`) lista las sugerencias con su autor y votos, y permite cambiar el estado con la acción `cambiarEstado`. El estado se refleja en la lista pública.
 
+Al enviar una sugerencia nueva, `crearSugerencia` busca títulos parecidos (con `ilike`, sin distinguir mayúsculas) y, si los hay, los muestra sin crear el duplicado.
+
 ## Diseño
 
 - Las plantillas de `docs/mockups/` son la referencia visual. El resultado debe parecerse a la plantilla, no solo funcionar.

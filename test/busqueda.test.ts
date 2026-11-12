@@ -4,7 +4,11 @@ import { db } from "../db/index";
 import { sugerencias, users } from "../db/schema";
 
 describe("búsqueda de sugerencias", () => {
-  const email = `autor-busqueda-${Date.now()}@pulso.test`;
+  const marca = Date.now();
+  const email = `autor-busqueda-${marca}@pulso.test`;
+  const tituloCsv = `Exportar a CSV ${marca}`;
+  const tituloOscuro = `Tema de modo oscuro ${marca}`;
+  const descripcionNocturna = `Fondo nocturno ${marca}`;
   let usuarioId: number;
   let idCon: number;
   let idSin: number;
@@ -18,13 +22,13 @@ describe("búsqueda de sugerencias", () => {
 
     const [s1] = await db
       .insert(sugerencias)
-      .values({ titulo: "Exportar a CSV", descripcion: "Llevar datos a una hoja de cálculo", autorId: usuarioId })
+      .values({ titulo: tituloCsv, descripcion: `Llevar datos a hoja ${marca}`, autorId: usuarioId })
       .returning({ id: sugerencias.id });
     idCon = s1.id;
 
     const [s2] = await db
       .insert(sugerencias)
-      .values({ titulo: "Modo oscuro", descripcion: "Tema nocturno para la aplicación", autorId: usuarioId })
+      .values({ titulo: tituloOscuro, descripcion: descripcionNocturna, autorId: usuarioId })
       .returning({ id: sugerencias.id });
     idSin = s2.id;
   });
@@ -38,7 +42,7 @@ describe("búsqueda de sugerencias", () => {
     const resultados = await db
       .select({ id: sugerencias.id })
       .from(sugerencias)
-      .where(ilike(sugerencias.titulo, "%csv%"));
+      .where(ilike(sugerencias.titulo, `%csv ${marca}%`));
     expect(resultados.map((r) => r.id)).toEqual([idCon]);
   });
 
@@ -46,7 +50,7 @@ describe("búsqueda de sugerencias", () => {
     const resultados = await db
       .select({ id: sugerencias.id })
       .from(sugerencias)
-      .where(or(ilike(sugerencias.titulo, "%nocturno%"), ilike(sugerencias.descripcion, "%nocturno%")));
+      .where(ilike(sugerencias.descripcion, `%nocturno ${marca}%`));
     expect(resultados.map((r) => r.id)).toEqual([idSin]);
   });
 });
