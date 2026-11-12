@@ -30,6 +30,8 @@ La versión canónica vive en `.agents/skills/` y se enlaza en `.claude/skills/`
 
 La lista pública de sugerencias se lee en `/` con un join a `users` para mostrar el nombre del autor, ordenada de la más reciente a la más antigua, y con el contador de votos de cada sugerencia. Votar y retirar el voto se hace con la acción `alternarVoto`, que exige sesión.
 
+La búsqueda filtra por título y descripción (sin distinguir mayúsculas) con el parámetro `?q=`. Con la búsqueda vacía se muestran todas; sin resultados se muestra un mensaje distinto al de lista vacía.
+
 El panel `/admin` (solo rol `administrador`) lista las sugerencias con su autor y votos, y permite cambiar el estado con la acción `cambiarEstado`. El estado se refleja en la lista pública.
 
 ## Diseño
