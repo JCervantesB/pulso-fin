@@ -15,6 +15,9 @@ export function validarSugerencia(titulo: string, descripcion: string): Validaci
   if (!descripcionLimpia) {
     return { ok: false, error: "La descripción no puede estar vacía." };
   }
+  if (descripcionLimpia.length > 1000) {
+    return { ok: false, error: "La descripción no puede superar los 1000 caracteres." };
+  }
 
   return { ok: true, titulo: tituloLimpio, descripcion: descripcionLimpia };
 }

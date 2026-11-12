@@ -24,6 +24,16 @@ describe("validación de sugerencias", () => {
     const resultado = validarSugerencia("a".repeat(121), "descripción");
     expect(resultado).toEqual({ ok: false, error: "El título no puede superar los 120 caracteres." });
   });
+
+  it("rechaza una descripción de más de 1000 caracteres", () => {
+    const resultado = validarSugerencia("título", "a".repeat(1001));
+    expect(resultado).toEqual({ ok: false, error: "La descripción no puede superar los 1000 caracteres." });
+  });
+
+  it("acepta una descripción de exactamente 1000 caracteres", () => {
+    const resultado = validarSugerencia("título", "a".repeat(1000));
+    expect(resultado).toEqual({ ok: true, titulo: "título", descripcion: "a".repeat(1000) });
+  });
 });
 
 describe("tabla de sugerencias", () => {
