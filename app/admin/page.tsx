@@ -1,10 +1,11 @@
 ﻿import Link from "next/link";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { count, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { users } from "@/db/schema";
+import { sugerencias, users, votos } from "@/db/schema";
 import { leerSesion } from "@/lib/auth/cookies";
 import { cerrarSesion } from "@/app/actions/auth";
+import { SelectorEstado } from "./selector-estado";
 
 export const instant = false;
 
@@ -12,8 +13,7 @@ export const metadata = {
   title: "Pulso · Panel de administración",
 };
 
-const selectClase =
-  "rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30";
+const formatoFecha = new Intl.DateTimeFormat("es", { day: "numeric", month: "long", year: "numeric" });
 
 export default async function AdminPage() {
   const sesion = await leerSesion();
@@ -22,6 +22,25 @@ export default async function AdminPage() {
   }
 
   const usuario = await db.select({ email: users.email }).from(users).where(eq(users.id, sesion.id));
+
+  const filas = await db
+    .select({
+      id: sugerencias.id,
+      titulo: sugerencias.titulo,
+      estado: sugerencias.estado,
+      createdAt: sugerencias.createdAt,
+      autor: users.nombre,
+    })
+    .from(sugerencias)
+    .innerJoin(users, eq(sugerencias.autorId, users.id))
+    .orderBy(desc(sugerencias.createdAt));
+
+  const conteos = await db
+    .select({ sugerenciaId: votos.sugerenciaId, total: count() })
+    .from(votos)
+    .groupBy(votos.sugerenciaId);
+
+  const totales = new Map(conteos.map((c) => [c.sugerenciaId, c.total]));
 
   return (
     <>
@@ -59,55 +78,25 @@ export default async function AdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-
-              <tr>
-                <td className="px-4 py-3">
-                  <p className="font-medium text-slate-900">Modo oscuro en toda la aplicación</p>
-                  <p className="text-xs text-slate-500">3 de noviembre de 2026</p>
-                </td>
-                <td className="px-4 py-3 text-slate-600">Ana Torres</td>
-                <td className="px-4 py-3 text-right font-semibold text-slate-900">12</td>
-                <td className="px-4 py-3">
-                  <select aria-label="Estado de Modo oscuro" className={selectClase} defaultValue="En desarrollo">
-                    <option>Pendiente</option>
-                    <option>En desarrollo</option>
-                    <option>Completada</option>
-                  </select>
-                </td>
-              </tr>
-
-              <tr>
-                <td className="px-4 py-3">
-                  <p className="font-medium text-slate-900">Exportar sugerencias a CSV</p>
-                  <p className="text-xs text-slate-500">1 de noviembre de 2026</p>
-                </td>
-                <td className="px-4 py-3 text-slate-600">Luis Pérez</td>
-                <td className="px-4 py-3 text-right font-semibold text-slate-900">7</td>
-                <td className="px-4 py-3">
-                  <select aria-label="Estado de Exportar sugerencias a CSV" className={selectClase} defaultValue="Pendiente">
-                    <option>Pendiente</option>
-                    <option>En desarrollo</option>
-                    <option>Completada</option>
-                  </select>
-                </td>
-              </tr>
-
-              <tr>
-                <td className="px-4 py-3">
-                  <p className="font-medium text-slate-900">Notificar cuando una idea cambie de estado</p>
-                  <p className="text-xs text-slate-500">28 de octubre de 2026</p>
-                </td>
-                <td className="px-4 py-3 text-slate-600">Marta Ruiz</td>
-                <td className="px-4 py-3 text-right font-semibold text-slate-900">3</td>
-                <td className="px-4 py-3">
-                  <select aria-label="Estado de Notificar cuando una idea cambie de estado" className={selectClase} defaultValue="Completada">
-                    <option>Pendiente</option>
-                    <option>En desarrollo</option>
-                    <option>Completada</option>
-                  </select>
-                </td>
-              </tr>
-
+              {filas.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-4 py-8 text-center text-slate-500">Todavía no hay sugerencias.</td>
+                </tr>
+              ) : (
+                filas.map((fila) => (
+                  <tr key={fila.id}>
+                    <td className="px-4 py-3">
+                      <p className="font-medium text-slate-900">{fila.titulo}</p>
+                      <p className="text-xs text-slate-500">{formatoFecha.format(fila.createdAt)}</p>
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">{fila.autor}</td>
+                    <td className="px-4 py-3 text-right font-semibold text-slate-900">{totales.get(fila.id) ?? 0}</td>
+                    <td className="px-4 py-3">
+                      <SelectorEstado id={fila.id} titulo={fila.titulo} estadoInicial={fila.estado} />
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
