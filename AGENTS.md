@@ -20,7 +20,7 @@ Además de las skills de OpenSpec (`openspec-*`), el proyecto define dos skills 
 - `drizzle-neon` — usar cuando la tarea toque el esquema, las migraciones o las consultas a PostgreSQL (Neon) con Drizzle.
 - `implementar-desde-mockup` — usar cuando la tarea construya o ajuste una página a partir de una plantilla de `docs/mockups/`.
 
-La versión canónica vive en `.agents/skills/` y se enlaza en `.claude/skills/` para Claude Code. Si editas una skill, hazlo en `.agents/skills/` y vuelve a copiarla.
+La versión canónica vive en `.agents/skills/`; las herramientas la leen desde ahí o mediante un enlace desde su propia carpeta (por ejemplo `.claude/skills/`). Edita siempre la canónica en `.agents/skills/`, nunca una copia.
 
 ## Modelo de datos
 
