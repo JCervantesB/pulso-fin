@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
+import { esCorreoDuplicado } from "@/lib/auth/errores";
 import { crearCookieSesion, borrarCookieSesion } from "@/lib/auth/cookies";
 
 export type EstadoAuth = {
@@ -34,10 +35,18 @@ export async function registrar(_estado: EstadoAuth, formData: FormData): Promis
   }
 
   const passwordHash = await hashPassword(contrasena);
-  const insertados = await db
-    .insert(users)
-    .values({ nombre, email, passwordHash })
-    .returning({ id: users.id, role: users.role });
+  let insertados;
+  try {
+    insertados = await db
+      .insert(users)
+      .values({ nombre, email, passwordHash })
+      .returning({ id: users.id, role: users.role });
+  } catch (error) {
+    if (esCorreoDuplicado(error)) {
+      return { error: "Ya existe una cuenta con ese correo." };
+    }
+    throw error;
+  }
 
   const usuario = insertados[0];
   await crearCookieSesion({ id: usuario.id, role: usuario.role });
