@@ -23,6 +23,19 @@ Procedimiento para tocar la base de datos. Síguelo siempre que la tarea afecte 
 3. Revisa el SQL generado en `drizzle/`.
 4. Ejecuta `npm run db:migrate`.
 
+Si `db:generate` pregunta si una columna o una tabla se renombró, responde con lo que realmente cambió en `db/schema.ts`. Si respondes mal, Drizzle genera un borrado y una creación, y los datos de esa columna se pierden.
+
+## Consultas
+
+Importa el cliente y las tablas desde sus módulos:
+
+```ts
+import { db } from "@/db";
+import { users } from "@/db/schema";
+```
+
+Usa el builder de Drizzle (`db.select()`, `db.insert()`, `db.update()`, `db.delete()`). Para SQL crudo, usa `sql` de `drizzle-orm`.
+
 ## Prohibido
 
 - Editar una migración ya aplicada: un cambio de esquema es una migración nueva.
